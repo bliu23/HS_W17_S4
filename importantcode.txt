@@ -1,0 +1,75 @@
+/**********************/
+/* Camera Permissions */
+/**********************/
+
+<uses-sdk
+	android:minSdkVersion="21"
+   	android:targetSdkVersion="21" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+/***************************************/
+/* Vars that you define above onCreate */
+/***************************************/
+
+private static final int ACTIVITY_START_CAMERA_APP = 0;
+private File mGalleryFolder;
+private String mImageFileLocation = "";
+Button startButton;
+Button pauseButton;
+MediaPlayer mPlayer;
+
+
+
+/***********************************/
+/* Super basic camera starter code */
+/***********************************/
+
+public void takePhoto(View view) throws IOException {
+	Intent cameraIntent = new Intent();
+	cameraIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+	//Photo filename, usually you’d specify it given a date or hash
+	File photoFile = File.createTempFile("photo",".jpg", mGalleryFolder);
+	cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+	startActivityForResult(cameraIntent, ACTIVITY_START_CAMERA_APP);
+}
+
+
+
+/*********************************/
+/* Super basic video in onCreate */
+/*********************************/
+
+VideoView videoView = (VideoView)findViewById(R.id.videoView);
+videoView.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.my_video);
+
+MediaController mediaController = new MediaController(this); //gives our session
+mediaController.setAnchorView(videoView);
+videoView.setMediaController(mediaController);
+
+videoView.start();
+
+
+
+/*********************************/
+/* Super basic audio in onCreate */
+/*********************************/
+
+startButton = (Button)findViewById(R.id.startButton);
+pauseButton = (Button)findViewById(R.id.pauseButton);
+mPlayer = MediaPlayer.create(this, R.raw.my_sounds);
+
+startButton.setOnClickListener(new View.OnClickListener() {
+   @Override
+   public void onClick(View v) {
+       mPlayer.start();
+   }
+});
+
+pauseButton.setOnClickListener(new View.OnClickListener() {
+   @Override
+   public void onClick(View v) {
+       mPlayer.pause();
+   }
+});
